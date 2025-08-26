@@ -1,0 +1,3 @@
+// globals.dart
+
+String? initialToken;

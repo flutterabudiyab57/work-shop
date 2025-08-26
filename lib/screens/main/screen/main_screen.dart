@@ -1,0 +1,897 @@
+import 'package:abu_diyab_workshop/core/constant/api.dart';
+import 'package:abu_diyab_workshop/screens/auth/cubit/login_cubit.dart';
+import 'package:abu_diyab_workshop/screens/auth/screen/login.dart';
+import 'package:abu_diyab_workshop/screens/profile/screens/profile_screen.dart';
+import 'package:abu_diyab_workshop/screens/services/screen/change_battery.dart';
+import 'package:abu_diyab_workshop/screens/services/screen/change_oil.dart';
+import 'package:abu_diyab_workshop/widgets/location.dart';
+import 'package:abu_diyab_workshop/widgets/slider.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../core/language/locale.dart';
+import '../../services/screen/change_tire.dart';
+import '../cubit/services_cubit.dart';
+import '../cubit/services_state.dart';
+
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  String _username = 'زائر'; // الاسم الافتراضي
+  final Dio dio = Dio();
+  List<Map<String, String>> services = [];
+  bool showAllServices = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsername();
+    context.read<ServicesCubit>().fetchServices();
+  }
+
+  void _loadUsername() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _username = prefs.getString('username') ?? 'زائر';
+    });
+  }
+
+  /*
+  Future<void> _logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) return;
+
+    try {
+      final dio = Dio();
+      final response = await dio.post(
+        'https://devworkshop.abudiyabksa.com/api/logout',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // مسح البيانات
+        await prefs.clear();
+
+        setState(() {
+          _username = 'زائر';
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('تم تسجيل الخروج بنجاح')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('فشل تسجيل الخروج')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('حدث خطأ أثناء تسجيل الخروج')),
+      );
+    }
+  }
+
+ */
+  @override
+  Widget build(BuildContext context) {
+    final locale = AppLocalizations.of(context);
+    bool isTablet = MediaQuery.of(context).size.shortestSide >= 600;
+
+    return Scaffold(
+      backgroundColor: Color(0xFFEAEAEA),
+      appBar: AppBar(
+        toolbarHeight: 150.h,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        flexibleSpace: Directionality(
+          textDirection:
+              Localizations.localeOf(context).languageCode == 'ar'
+                  ? TextDirection.rtl
+                  : TextDirection.ltr,
+          child: Container(
+            padding: EdgeInsets.only(top: 10.h, left: 10.w, right: 10.w),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFFBA1B1B), Color(0xFFD27A7A)],
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        final token = prefs.getString('token');
+
+                        if (token != null && token.isNotEmpty) {
+                          // المستخدم مسجل دخول، روح على صفحة البروفايل
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfileScreen(),
+                            ),
+                          );
+                        } else {
+                          // مش مسجل دخول، اعرض Bottom Sheet
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder:
+                                (context) => BlocProvider(
+                                  create: (_) => LoginCubit(dio: Dio()),
+                                  child: const LoginBottomSheet(),
+                                ),
+                          );
+                        }
+                      },
+                      child: Container(
+                        width: 48.w,
+                        height: 48.h,
+                        child: const CircleAvatar(
+                          radius: 30,
+                          backgroundImage: AssetImage(
+                            'assets/images/profile_image.png',
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            (locale!.isDirectionRTL(context)
+                                ? "هلا $_username"
+                                : "Hello $_username")
+                                .substring(0, (locale!.isDirectionRTL(context)
+                                ? "هلا $_username"
+                                : "Hello $_username").length > 20 ? 20 : (locale!.isDirectionRTL(context)
+                                ? "هلا $_username"
+                                : "Hello $_username").length)
+                                + ((locale!.isDirectionRTL(context)
+                                ? "هلا $_username"
+                                : "Hello $_username").length > 20 ? "..." : ""),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18.sp,
+                              fontFamily: 'Graphik Arabic',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+
+
+                          SizedBox(height: 4.h),
+                          // مكانك داخل flexibleSpace Column:
+                          SizedBox(
+                            height: 25.h,
+                            // قيد واضح لحجم الـ location widget داخل الـ AppBar
+                            child: const LocationWidget(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Spacer(),
+                    GestureDetector(
+                      child: Container(
+                        width: 48.w,
+                        height: 48.h,
+                        decoration: ShapeDecoration(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              width: 1,
+                              color: Colors.black.withValues(alpha: 0.50),
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.notifications_active,
+                          color: Color(0xFF4D4D4D),
+                          size: 28.sp,
+                        ),
+                      ),
+                      onTap: () {},
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20.h),
+                Row(
+                  children: [
+                    Container(
+                      width: 282.w,
+                      height: 50.h,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: ShapeDecoration(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(
+                            width: 1.5,
+                            color: Color(0xFFAFAFAF),
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              SizedBox(width: 10.w),
+                              Text(
+                                'ابحث عن الخدمات',
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15.sp,
+                                  fontFamily: 'Graphik Arabic',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.search,
+                              size: 20,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Spacer(),
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          width: 1,
+                          color: Colors.black.withValues(alpha: 0.5),
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // الأيقونة أو  الفاضي للأيقونة
+                          SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: Icon(
+                              Icons.ios_share_outlined,
+                              size: 20.sp,
+                              color: Color(0xFF474747),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'مشاركة',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Color(0xFFBA1B1B),
+                              fontSize: 10,
+                              fontFamily: 'Graphik Arabic',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      body: BlocBuilder<ServicesCubit, ServicesState>(
+        builder: (context, state) {
+          if (state is ServicesLoading) {
+            return Center(child: CircularProgressIndicator());
+          } else if (state is ServicesError) {
+            print(state.message);
+            return Center(child: Text(state.message));
+          } else if (state is ServicesLoaded) {
+            return Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    ImageSlider(),
+                    SizedBox(height: 15.h),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          textDirection:
+                              Localizations.localeOf(context).languageCode ==
+                                      'ar'
+                                  ? TextDirection.rtl
+                                  : TextDirection.ltr,
+                          children: [
+                            Text(
+                              locale.isDirectionRTL(context)
+                                  ? "الخدمات "
+                                  : "Services",
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.sp,
+                                fontFamily: 'GraphikArabic',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  showAllServices = !showAllServices;
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    showAllServices
+                                        ? (locale.isDirectionRTL(context)
+                                            ? "إخفاء"
+                                            : "Hide")
+                                        : (locale.isDirectionRTL(context)
+                                            ? "عرض الكل"
+                                            : "Show All"),
+                                    style: TextStyle(
+                                      color: const Color(0xFFBA1B1B),
+                                      fontSize: 16.h,
+                                      fontFamily: 'Graphik Arabic',
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Icon(
+                                    showAllServices
+                                        ? Icons.keyboard_arrow_up
+                                        : Icons.keyboard_arrow_down,
+                                    color: Color(0xFFBA1B1B),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 12.h),
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount:
+                              showAllServices
+                                  ? state.services.length
+                                  : (state.services.length > 3
+                                      ? 3
+                                      : state.services.length),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 12,
+                                crossAxisSpacing: 12,
+                                childAspectRatio: 1,
+                              ),
+
+                          itemBuilder: (context, index) {
+                            final service = state.services[index];
+                            return _buildServiceItem(
+                              title: service.title,
+                              imagePath: service.image,
+                              serviceId: service.id, // لو موجود عندك من الموديل
+
+                            );
+                          },
+                        ),
+                        SizedBox(height: 15.h),
+                        Center(
+                          child: Image.asset(
+                            'assets/images/main_pack.png',
+                            width: 350.w,
+                            height: 140.h,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        SizedBox(height: 15.h),
+                        Row(
+                          children: [
+                            Text(
+                              locale.isDirectionRTL(context)
+                                  ? 'الصيانات القادمة'
+                                  : "Upcoming maintenance",
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16.sp,
+                                fontFamily: 'Graphik Arabic',
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Image.asset(
+                              'assets/images/notifi.png',
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10.h),
+                        Container(
+                          width: double.infinity,
+                          height: isTablet ? 140.h : 100.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.8),
+                            borderRadius: BorderRadius.circular(12.sp),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(10.w),
+                            child: Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                    'assets/images/mintance_backg.png',
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  locale.isDirectionRTL(context)
+                                      ? "ذكّرني بصيانة سيارتي +"
+                                      : "maintenance my car +",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20.sp,
+                                    fontFamily: 'Graphik Arabic',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        Container(
+                          width: double.infinity,
+                          height: isTablet ? 120.h : 94.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 12.r,
+                                offset: Offset(0, 0),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            textDirection:
+                                Localizations.localeOf(context).languageCode ==
+                                        'ar'
+                                    ? TextDirection.rtl
+                                    : TextDirection.ltr,
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10.w,
+                                    vertical: 10.h,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            locale.isDirectionRTL(context)
+                                                ? "تغيير إطارات "
+                                                : "Change tires",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14.sp,
+                                              fontFamily: 'Graphik Arabic',
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          SizedBox(width: 5.w),
+                                          Image.asset(
+                                            "assets/icons/tire1.png",
+                                            width: 22.w,
+                                            height: 20.h,
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ],
+                                      ),
+
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            locale.isDirectionRTL(context)
+                                                ? 'جيلي , إمجراند'
+                                                : "Geely, Emgrand",
+                                            style: TextStyle(
+                                              color: Colors.black.withValues(
+                                                alpha: 0.70,
+                                              ),
+                                              fontSize: 14.sp,
+                                              fontFamily: 'Graphik Arabic',
+                                              fontWeight: FontWeight.w600,
+                                              height: 1.60,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10.w),
+                                          Text(
+                                            '2024',
+                                            style: TextStyle(
+                                              color: Colors.black.withValues(
+                                                alpha: 0.70,
+                                              ),
+                                              fontSize: 14.sp,
+                                              fontFamily: 'Graphik Arabic',
+                                              fontWeight: FontWeight.w600,
+                                              height: 1.60,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Image.asset(
+                                              "assets/icons/quill_notifications.png",
+                                              width: 18.w,
+                                              height: 18.h,
+                                            ),
+                                            Text(
+                                              '17 / 9 / 2025',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 14.21.sp,
+                                                fontFamily: 'Graphik Arabic',
+                                                fontWeight: FontWeight.w500,
+                                                height: 1.60,
+                                              ),
+                                            ),
+                                            SizedBox(width: 10.w),
+                                            Text(
+                                              locale.isDirectionRTL(context)
+                                                  ? "صيانتك بعد 5 أيام"
+                                                  : "Your maintenance after 5 days",
+                                              style: TextStyle(
+                                                color: const Color(0xFFBA1B1B),
+                                                fontSize: 16.sp,
+                                                fontFamily: 'Graphik Arabic',
+                                                fontWeight: FontWeight.w600,
+                                                height: 1.60,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              Container(
+                                width: 99.w,
+                                height: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.06),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(12.r),
+                                    bottomLeft: Radius.circular(12.r),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    "assets/icons/car_logo.png",
+                                    // width: 40.w, // حجم مناسب - تقدر تعدّله حسب الحاجة
+                                    // height: 40.h,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        Container(
+                          width: double.infinity,
+                          height: isTablet ? 120.h : 94.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 12.r,
+                                offset: Offset(0, 0),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            textDirection:
+                                Localizations.localeOf(context).languageCode ==
+                                        'ar'
+                                    ? TextDirection.rtl
+                                    : TextDirection.ltr,
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10.w,
+                                    vertical: 10.h,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            locale.isDirectionRTL(context)
+                                                ? "تغيير إطارات "
+                                                : "Change tires",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 14.sp,
+                                              fontFamily: 'Graphik Arabic',
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          SizedBox(width: 5.w),
+                                          Image.asset(
+                                            "assets/icons/tire1.png",
+                                            width: 22.w,
+                                            height: 20.h,
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ],
+                                      ),
+
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            locale.isDirectionRTL(context)
+                                                ? 'جيلي , إمجراند'
+                                                : "Geely, Emgrand",
+                                            style: TextStyle(
+                                              color: Colors.black.withValues(
+                                                alpha: 0.70,
+                                              ),
+                                              fontSize: 14.sp,
+                                              fontFamily: 'Graphik Arabic',
+                                              fontWeight: FontWeight.w600,
+                                              height: 1.60,
+                                            ),
+                                          ),
+                                          SizedBox(width: 10.w),
+                                          Text(
+                                            '2024',
+                                            style: TextStyle(
+                                              color: Colors.black.withValues(
+                                                alpha: 0.70,
+                                              ),
+                                              fontSize: 14.sp,
+                                              fontFamily: 'Graphik Arabic',
+                                              fontWeight: FontWeight.w600,
+                                              height: 1.60,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Image.asset(
+                                              "assets/icons/quill_notifications.png",
+                                              width: 18.w,
+                                              height: 18.h,
+                                            ),
+                                            Text(
+                                              '17 / 9 / 2025',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 14.21.sp,
+                                                fontFamily: 'Graphik Arabic',
+                                                fontWeight: FontWeight.w500,
+                                                height: 1.60,
+                                              ),
+                                            ),
+                                            SizedBox(width: 10.w),
+                                            Text(
+                                              locale.isDirectionRTL(context)
+                                                  ? "صيانتك بعد 5 أيام"
+                                                  : "Your maintenance after 5 days",
+                                              style: TextStyle(
+                                                color: const Color(0xFFBA1B1B),
+                                                fontSize: 16.sp,
+                                                fontFamily: 'Graphik Arabic',
+                                                fontWeight: FontWeight.w600,
+                                                height: 1.60,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: 99.w,
+                                height: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.06),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(12.r),
+                                    bottomLeft: Radius.circular(12.r),
+                                  ),
+                                ),
+                                child: Center(
+                                  child: Image.asset(
+                                    "assets/icons/car_logo.png",
+
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+          return SizedBox(); // Default return
+        },
+      ),
+    );
+  }
+
+  Widget _buildServiceItem({
+    required String title,
+    required String imagePath,
+    int? serviceId, // ممكن تستخدم id من API لو عندك
+  }) {
+    final isNetworkImage = imagePath.startsWith('http');
+
+    return GestureDetector(
+      onTap: () {
+        _navigateToServiceScreen(serviceId, title);
+      },
+      child: Column(
+        children: [
+          Container(
+            width: 100.w,
+            height: 100.h,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 45.w,
+                  height: 45.h,
+                  child: isNetworkImage
+                      ? Image.network(
+                    imagePath,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                        Image.asset('assets/images/water_rinse.png'),
+                  )
+                      : Image.asset(imagePath, fit: BoxFit.cover),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14.h,
+                    fontFamily: 'Graphik Arabic',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  void _navigateToServiceScreen(int? id, String title) {
+    switch (id) {
+      case 1:
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ChangeOil()));
+        break;
+          case 2:
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ChangeTire()));
+        break;
+        case 9:
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ChangeBattery()));
+        break;
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("الصفحة الخاصة بـ $title لسه مش متوفرة")),
+        );
+    }
+  }
+
+}

@@ -1,0 +1,9 @@
+const String productionApi = "https://devworkshop.abudiyabksa.com/api";
+const String imageApi = "https://devworkshop.abudiyabksa.com/storage";
+const String loginApi = "/login";
+const String registerApi = "/register";
+const String profileApi = "/profile";
+const String servicesApi = "/services";
+const String BrandApi = "/car-brands";
+const String ModelApi = "/car-brand/2/models";
+const String mainApi = productionApi;
