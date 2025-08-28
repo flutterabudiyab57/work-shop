@@ -318,7 +318,7 @@ class _EditCarState extends State<EditCar> {
                   }
                   if (state is CarBrandLoaded) {
                     return SizedBox(
-                      height: 80, // عشان فيه صورة + اسم
+                      height: 110.h,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: state.brands.length,
@@ -337,7 +337,7 @@ class _EditCarState extends State<EditCar> {
                               );
                             },
                             child: Container(
-                              width: 70,
+                              width: 80.w, // عرض ريسبونسف
                               height: 70,
                               margin: const EdgeInsets.symmetric(horizontal: 6),
                               decoration: BoxDecoration(
@@ -377,7 +377,7 @@ class _EditCarState extends State<EditCar> {
                                           isSelected
                                               ? Colors.black
                                               : Colors.grey,
-                                      fontSize: 14.h,
+                                      fontSize: 12.h,
                                       fontFamily: 'Graphik Arabic',
                                       fontWeight: FontWeight.w600,
                                     ),

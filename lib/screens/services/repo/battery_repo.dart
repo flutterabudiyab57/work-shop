@@ -10,6 +10,7 @@ class BatteryRepository {
       receiveTimeout: const Duration(seconds: 10),
       headers: {
         "Accept": "application/json",
+        "Accept-Language": "ar",
       },
     ),
   );

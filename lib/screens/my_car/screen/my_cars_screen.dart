@@ -1,4 +1,5 @@
 import 'package:abu_diyab_workshop/core/language/locale.dart';
+import 'package:abu_diyab_workshop/screens/my_car/screen/widget/details_item.dart';
 import 'package:abu_diyab_workshop/screens/my_car/screen/widget/edit_car.dart';
 
 import 'package:flutter/material.dart';
@@ -65,7 +66,7 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                         size: 40,
                       ),
                       SizedBox(height: 20.h),
-                      Text(state.message),
+                  //    Text(state.message),
                       ElevatedButton(
                         onPressed: _loadCars,
                         child: const Text("سجل الدخول مره اخري من فضلك"),
@@ -191,15 +192,15 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: 6.h),
-                          _DetailItem(
+                          DetailItem(
                             label: 'ماركــة السيـــارة:',
                             value: car.carBrand['name'] ?? '',
                           ),
-                          _DetailItem(
+                          DetailItem(
                             label: 'موديل السيـــارة:',
                             value: car.carModel['name'] ?? '',
                           ),
-                          _DetailItem(
+                          DetailItem(
                             label: 'سنة الصنع:',
                             value: car.creationYear?.toString() ?? '',
                           ),
@@ -363,36 +364,3 @@ class _MyCarsScreenState extends State<MyCarsScreen> {
   }
 }
 
-class _DetailItem extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _DetailItem({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 14.sp,
-            fontFamily: 'Graphik Arabic',
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(width: 8.w),
-        Text(
-          value,
-          style: TextStyle(
-            color: const Color(0xFFBA1B1B),
-            fontSize: 14.sp,
-            fontFamily: 'Graphik Arabic',
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  }
-}

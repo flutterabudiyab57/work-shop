@@ -5,7 +5,6 @@ import 'package:abu_diyab_workshop/screens/my_car/cubit/CarModelCubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/add_car_cubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/all_cars_cubit.dart';
 import 'package:abu_diyab_workshop/screens/my_car/cubit/car_brand_cubit.dart';
-import 'package:abu_diyab_workshop/screens/my_car/screen/my_cars_screen.dart';
 import 'package:abu_diyab_workshop/screens/on_boarding/screen/on_boarding_screen.dart';
 import 'package:abu_diyab_workshop/screens/services/cubit/battery_cubit.dart';
 import 'package:abu_diyab_workshop/screens/services/cubit/oil_cubit.dart';
@@ -24,6 +23,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/constant/api.dart';
 import 'core/global.dart';
 import 'core/language/locale.dart';
+import 'core/theme.dart';
 
 final GlobalKey<_MyAppState> myAppKey = GlobalKey<_MyAppState>();
 String? initialToken;
@@ -32,7 +32,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(statusBarColor: Colors.redAccent),
+    const SystemUiOverlayStyle(statusBarColor: Colors.redAccent),
   );
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -55,22 +55,12 @@ void main() async {
           create: (_) => CarModelCubit(dio: Dio(), productionApi: productionApi),
         ),
         BlocProvider<AddCarCubit>(create: (_) => AddCarCubit()),
-        BlocProvider<LoginCubit>(
-          create: (_) => LoginCubit(dio: Dio()),
-        ),
-         BlocProvider(
-          create: (_) => CarCubit(),
-        ),
-        BlocProvider(
-          create: (_) => OilCubit(OilRepository()),
-        ),
-        BlocProvider(
-          create: (_) => TireCubit(TireRepository()),
-        ),
-        BlocProvider(
-          create: (_) => BatteryCubit(BatteryRepository()),
-        ),
-
+        BlocProvider<LoginCubit>(create: (_) => LoginCubit(dio: Dio())),
+        BlocProvider(create: (_) => CarCubit()),
+        BlocProvider(create: (_) => OilCubit(OilRepository())),
+        BlocProvider(create: (_) => TireCubit(TireRepository())),
+        BlocProvider(create: (_) => BatteryCubit(BatteryRepository())),
+        BlocProvider(create: (_) => ThemeCubit()),
       ],
       child: MyApp(
         key: myAppKey,
@@ -78,7 +68,6 @@ void main() async {
       ),
     ),
   );
-
 }
 
 class MyApp extends StatefulWidget {
@@ -105,13 +94,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  // تحقق من التوكين
   Future<void> _checkToken() async {
     final prefs = await SharedPreferences.getInstance();
     final currentToken = prefs.getString('token');
 
     if (currentToken != initialToken) {
-      print("⚠️ التوكين اتغير أو انتهى، جاري مسح الكاش...");
       await prefs.clear();
       initialToken = null;
 
@@ -124,7 +111,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
   }
 
-  // إعادة توجيه بعد تسجيل الدخول
   void navigateToHome() {
     if (mounted) {
       Navigator.of(context).pushAndRemoveUntil(
@@ -160,22 +146,29 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {
-        return MaterialApp(
-
-          locale: _locale,
-          supportedLocales: const [Locale('en'), Locale('ar')],
-          localizationsDelegates: const [
-            AppLocalizationsDelegate(),
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          theme: ThemeData(fontFamily: 'Graphik Arabic'),
-          debugShowCheckedModeBanner: false,
-          home: Directionality(
-            textDirection: _locale?.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr,
-            child: child!,
-          ),
+        return BlocBuilder<ThemeCubit, ThemeMode>(
+          builder: (context, themeMode) {
+            return MaterialApp(
+              locale: _locale,
+              supportedLocales: const [Locale('en'), Locale('ar')],
+              localizationsDelegates: const [
+                AppLocalizationsDelegate(),
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              theme: lightTheme(),
+              darkTheme: darkTheme(),
+              themeMode: themeMode,
+              debugShowCheckedModeBanner: false,
+              home: Directionality(
+                textDirection: _locale?.languageCode == 'ar'
+                    ? TextDirection.rtl
+                    : TextDirection.ltr,
+                child: widget.initialScreen,
+              ),
+            );
+          },
         );
       },
       child: widget.initialScreen,

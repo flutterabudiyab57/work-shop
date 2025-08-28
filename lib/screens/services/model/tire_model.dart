@@ -1,4 +1,3 @@
-
 class Tire {
   final int id;
   final String size;
@@ -22,14 +21,14 @@ class Tire {
 
   factory Tire.fromJson(Map<String, dynamic> json) {
     return Tire(
-      id: json['id'] ?? 0,
-      size: json['size'] ?? '',
-      price: json['price'] ?? 0,
-      manufactureYear: json['manufacture_year'] ?? '',
-      available: json['available'] ?? 0,
-      type: json['type'] ?? '',
-      brand: json['brand'] ?? '',
-      country: json['country'] ?? '',
+      id: json['id'],
+      size: json['size'],
+      price: json['price'],
+      manufactureYear: json['manufacture_year'],
+      available: json['available'],
+      type: json['type'],
+      brand: json['brand'],
+      country: json['country'],
     );
   }
 

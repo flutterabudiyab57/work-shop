@@ -1,4 +1,4 @@
-// oil.dart
+
 class Oil {
   final int id;
   final String name;
@@ -7,7 +7,7 @@ class Oil {
   final String country;
   final int available;
   final String price;
-  final String description;
+  final String? description;
 
   Oil({
     required this.id,
@@ -17,7 +17,7 @@ class Oil {
     required this.country,
     required this.available,
     required this.price,
-    required this.description,
+    this.description,
   });
 
   factory Oil.fromJson(Map<String, dynamic> json) {
@@ -29,7 +29,20 @@ class Oil {
       country: json['country'],
       available: json['available'],
       price: json['price'],
-      description: json['description'],
+      description: json['description'] == "null" ? null : json['description'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'type': type,
+      'brand': brand,
+      'country': country,
+      'available': available,
+      'price': price,
+      'description': description,
+    };
   }
 }

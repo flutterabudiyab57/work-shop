@@ -10,10 +10,9 @@ class OldOrder extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
 
-
     return Container(
       width: 350.w,
-      height: 454 .h,
+      height: 454.h,
       // Makes container responsive
       padding: EdgeInsets.all(12),
       // Add padding instead of hardcoded positions
@@ -94,7 +93,8 @@ class OldOrder extends StatelessWidget {
             child: Text(
               "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
             ),
-          ),          SizedBox(height: 3),
+          ),
+          SizedBox(height: 3),
 
           // Status and order number row
           Row(
@@ -155,7 +155,8 @@ class OldOrder extends StatelessWidget {
             child: Text(
               "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
             ),
-          ),          SizedBox(height: 3),
+          ),
+          SizedBox(height: 3),
 
           // Vehicle details section
           Row(
@@ -164,15 +165,18 @@ class OldOrder extends StatelessWidget {
             children: [
               // Vehicle image placeholder
               Container(
-                width: 93.w ,
+                width: 93.w,
                 height: 85.h,
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.06),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child:Image.asset('assets/icons/car_logo.png',fit: BoxFit.cover,),
+                child: Image.asset(
+                  'assets/icons/car_logo.png',
+                  fit: BoxFit.cover,
+                ),
               ),
-              SizedBox(width: 10,),
+              SizedBox(width: 10),
 
               // Vehicle details
               Column(
@@ -190,7 +194,8 @@ class OldOrder extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           height: 1.83,
                         ),
-                      ),                      SizedBox(width: 8),
+                      ),
+                      SizedBox(width: 8),
 
                       Text(
                         'جيلي اميجراند 2023',
@@ -203,7 +208,6 @@ class OldOrder extends StatelessWidget {
                           height: 1.69,
                         ),
                       ),
-
                     ],
                   ),
 
@@ -221,7 +225,8 @@ class OldOrder extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           height: 1.83,
                         ),
-                      ),                      SizedBox(width: 8),
+                      ),
+                      SizedBox(width: 8),
 
                       Text(
                         'جيلي اميجراند 2023',
@@ -234,7 +239,6 @@ class OldOrder extends StatelessWidget {
                           height: 1.69,
                         ),
                       ),
-
                     ],
                   ),
 
@@ -252,7 +256,8 @@ class OldOrder extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           height: 1.83,
                         ),
-                      ),                      SizedBox(width: 8),
+                      ),
+                      SizedBox(width: 8),
 
                       Text(
                         'جيلي اميجراند 2023',
@@ -265,7 +270,6 @@ class OldOrder extends StatelessWidget {
                           height: 1.69,
                         ),
                       ),
-
                     ],
                   ),
                 ],
@@ -278,7 +282,8 @@ class OldOrder extends StatelessWidget {
             child: Text(
               "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -",
             ),
-          ),          SizedBox(height: 3),
+          ),
+          SizedBox(height: 3),
           // Delivery estimate
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -318,22 +323,23 @@ class OldOrder extends StatelessWidget {
           SizedBox(height: 3),
           Center(
             child: Container(
-              width: double.infinity, // يجعل الحاوية متجاوبة
-              constraints: BoxConstraints(maxWidth: 327.w), // أقصى عرض
+              width: double.infinity,
+              // يجعل الحاوية متجاوبة
+              constraints: BoxConstraints(maxWidth: 327.w),
+              // أقصى عرض
               height: 55.h,
               decoration: ShapeDecoration(
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                    width: 1.50,
-                    color: const Color(0xFFA3A3A3),
-                  ),
+                  side: BorderSide(width: 1.50, color: const Color(0xFFA3A3A3)),
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: Center( // أضفنا Center هنا لجعل المحتوى في المنتصف رأسيًا
+              child: Center(
+                // أضفنا Center هنا لجعل المحتوى في المنتصف رأسيًا
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center, // يجعل العناصر في المنتصف أفقيًا
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  // يجعل العناصر في المنتصف أفقيًا
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.asset(
@@ -441,7 +447,6 @@ class OldOrder extends StatelessWidget {
                   ),
                 ),
               ),
-
             ],
           ),
         ],

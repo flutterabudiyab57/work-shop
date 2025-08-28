@@ -39,14 +39,17 @@ class widget_ITN extends StatelessWidget {
               text,
               textAlign: TextAlign.right,
               style: TextStyle(
-                color: Colors.black,
+                color: Theme.of(context).brightness ==
+                    Brightness.light
+                    ? Colors.black
+                    :Colors.white,
                 fontSize: 15,
                 fontFamily: 'Graphik Arabic',
                 fontWeight: FontWeight.w500,
               ),
             ),
             Spacer(),
-            Icon(Icons.arrow_forward_ios, color: Color(0xFF4D4D4D)),
+            Icon(Icons.arrow_forward_ios, color: Color(0xFFBA1B1B)),
           ],
         ),
       ),

@@ -230,13 +230,13 @@ class _AddCarState extends State<AddCar> {
                 ),
               ),
               SizedBox(height: 10.h),
-              BlocBuilder<CarBrandCubit, CarBrandState>(
+              BlocBuilder<CarBrandCubit, CarBrandState> (
                 builder: (context, state) {
                   if (state is CarBrandLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is CarBrandLoaded) {
                     return SizedBox(
-                      height: 100, // ارتفاع الـ horizontal list
+                      height: 110.h,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: state.brands.length,
@@ -250,33 +250,26 @@ class _AddCarState extends State<AddCar> {
                                 _selectedCarBrandId = car.id;
                                 _selectedCarModelId = null;
                               });
-                              context.read<CarModelCubit>().fetchCarModels(
-                                car.id,
-                              );
+                              context.read<CarModelCubit>().fetchCarModels(car.id);
                             },
                             child: Container(
-                              width: 70,
-
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
-                              padding: const EdgeInsets.all(8),
+                              width: 80.w, // عرض ريسبونسف
+                              margin: EdgeInsets.symmetric(horizontal: 6.w),
+                              padding: EdgeInsets.all(6.w),
                               decoration: BoxDecoration(
-                                color:
-                                    isSelected
-                                        ? Color(0xFFE19A9A)
-                                        : Colors.white,
-                                borderRadius: BorderRadius.circular(12),
+                                color: isSelected ? const Color(0xFFE19A9A) : Colors.white,
+                                borderRadius: BorderRadius.circular(12.r),
                                 border: Border.all(
-                                  color:
-                                      isSelected
-                                          ? Color(0xFFBA1B1B)
-                                          : Colors.grey.shade300,
-                                  width: 2,
+                                  color: isSelected
+                                      ? const Color(0xFFBA1B1B)
+                                      : Colors.grey.shade300,
+                                  width: 2.w,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black12,
-                                    blurRadius: 4,
-                                    offset: Offset(0, 2),
+                                    blurRadius: 6.r,
+                                    offset: Offset(0, 2.h),
                                   ),
                                 ],
                               ),
@@ -285,25 +278,21 @@ class _AddCarState extends State<AddCar> {
                                 children: [
                                   Image.network(
                                     car.image,
-                                    width: 40,
-                                    height: 40,
-                                    fit: BoxFit.contain,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            const Icon(Icons.error, size: 24),
+                                    width: 40.w,
+                                    height: 40.w,
+                                    fit: BoxFit.scaleDown,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                        Icon(Icons.error, size: 24.sp),
                                   ),
-                                  const SizedBox(height: 4),
+                                  SizedBox(height:  4.h),
                                   Text(
                                     car.name,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      color:
-                                          isSelected
-                                              ? Colors.black
-                                              : Colors.grey,
-                                      fontSize: 14.h,
+                                      color: isSelected ? Colors.black : Colors.grey,
+                                      fontSize: 12.sp, // خط ريسبونسف
                                       fontFamily: 'Graphik Arabic',
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -348,7 +337,7 @@ class _AddCarState extends State<AddCar> {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is CarModelLoaded) {
                     return SizedBox(
-                      height: 50.h, // ارتفاع قائمة الموديلات
+                      height: 50.h, // ارتفاع ريسبونسف
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: state.models.length,
@@ -365,28 +354,22 @@ class _AddCarState extends State<AddCar> {
                             child: Container(
                               width: 70.w,
                               height: 50.h,
-
-                              // ارتفاع قائمة الموديلات
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
-                              padding: const EdgeInsets.all(8),
+                              margin: EdgeInsets.symmetric(horizontal: 8.w),
+                              padding: EdgeInsets.all(8.w),
                               decoration: BoxDecoration(
-                                color:
-                                    isSelected
-                                        ? Color(0xFFE19A9A)
-                                        : Colors.white,
-                                borderRadius: BorderRadius.circular(12),
+                                color: isSelected ? const Color(0xFFE19A9A) : Colors.white,
+                                borderRadius: BorderRadius.circular(12.r),
                                 border: Border.all(
-                                  color:
-                                      isSelected
-                                          ? Color(0xFFBA1B1B)
-                                          : Colors.grey.shade300,
-                                  width: 2,
+                                  color: isSelected
+                                      ? const Color(0xFFBA1B1B)
+                                      : Colors.grey.shade300,
+                                  width: 2.w,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black12,
-                                    blurRadius: 4,
-                                    offset: Offset(0, 2),
+                                    blurRadius: 4.r,
+                                    offset: Offset(0, 2.h),
                                   ),
                                 ],
                               ),
@@ -397,11 +380,8 @@ class _AddCarState extends State<AddCar> {
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color:
-                                      isSelected
-                                          ? Colors.black
-                                          : Colors.black54,
-                                  fontSize: 11.h,
+                                  color: isSelected ? Colors.black : Colors.black54,
+                                  fontSize: 11.sp, // ريسبونسف
                                   fontFamily: 'Graphik Arabic',
                                   fontWeight: FontWeight.w400,
                                 ),
@@ -417,7 +397,6 @@ class _AddCarState extends State<AddCar> {
                   return const SizedBox();
                 },
               ),
-
               SizedBox(height: 15.h),
 
               // --- اسم السيارة (اختياري) ---

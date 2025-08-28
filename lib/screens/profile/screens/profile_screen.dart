@@ -75,7 +75,8 @@ class ProfileScreen extends StatelessWidget {
           builder: (context, state) {
             if (state is ProfileLoading) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state is ProfileLoaded) {
+            }
+            else if (state is ProfileLoaded) {
               final user = state.user;
               return SingleChildScrollView(
                 padding: EdgeInsets.all(16.w),

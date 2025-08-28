@@ -4,6 +4,7 @@ const String loginApi = "/login";
 const String registerApi = "/register";
 const String profileApi = "/profile";
 const String servicesApi = "/services";
+const String otpApi = "/verify-phone";
 const String BrandApi = "/car-brands";
 const String ModelApi = "/car-brand/2/models";
 const String mainApi = productionApi;

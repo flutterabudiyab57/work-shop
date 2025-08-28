@@ -10,9 +10,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/language/locale.dart';
+import '../../../core/theme.dart';
 import '../../../main.dart';
 import '../../on_boarding/screen/on_boarding_screen.dart';
 
@@ -62,7 +64,10 @@ class _MoreScreenState extends State<MoreScreen> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: Color(0xFFEAEAEA),
+        backgroundColor:  Theme.of(context).brightness ==
+          Brightness.light
+          ? Colors.white
+          :Colors.black,
         appBar: AppBar(
           toolbarHeight: 130.h,
           backgroundColor: Colors.transparent,
@@ -70,19 +75,21 @@ class _MoreScreenState extends State<MoreScreen> {
           automaticallyImplyLeading: false,
           flexibleSpace: Container(
             padding: EdgeInsets.only(top: 10.h, left: 10.w, right: 10.w),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFFBA1B1B), Color(0xFFD27A7A)],
+                colors: Theme.of(context).brightness == Brightness.light
+                    ? [const Color(0xFFBA1B1B), const Color(0xFFD27A7A)]
+                    : [const Color(0xFF690505), const Color(0xFF6F5252)],
               ),
             ),
+
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   locale!.isDirectionRTL(context) ? "المزيد" : "More",
-
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,
@@ -104,10 +111,13 @@ class _MoreScreenState extends State<MoreScreen> {
                 Row(
                   children: [
                     Text(
-                      'عام',
+                      'المزيد',
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Theme.of(context).brightness ==
+                            Brightness.light
+                       ? Colors.black
+                        :Colors.white,
                         fontSize: 25,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w500,
@@ -162,13 +172,16 @@ class _MoreScreenState extends State<MoreScreen> {
                       Icon(Icons.language,color: Color(0xFFBA1B1B),) ,// شكل الكرة الأرضية الافتراضي
                       Padding(
                         padding: const EdgeInsets.all(4.0),
-                        child: Text(
+                        child:
+                        Text(
                           locale!.isDirectionRTL(context)
                               ? 'لغة التطبيق'
                               : 'App Language',
                           style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
+                            color: Theme.of(context).brightness ==
+                                Brightness.light
+                                ? Colors.black
+                                : Colors.white,                            fontSize: 16,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w500,
                           ),
@@ -186,6 +199,44 @@ class _MoreScreenState extends State<MoreScreen> {
                     ],
                   ),
                 ),
+
+                SizedBox(height: 10.h),
+                 Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      // حواف دائرية بـ radius 16
+                      border: Border.all(
+                        color: Colors.grey, // لون البوردر
+                        width: 2.0, // سماكة البوردر
+                      ),
+                    ),
+                    child: ListTile(
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(
+                            Icons.color_lens,
+                            color: Color(0xFFBA1B1B),
+                          ),
+                          SizedBox(width: 5.w),
+
+                          Text(
+                            locale.isDirectionRTL(context)
+                                ? "الوضع الليلي "
+                                : "Dark Theme",                              style: GoogleFonts.almarai(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(context).brightness ==
+                                Brightness.light
+                                ? Colors.black
+                                : Colors.white,
+                          ),
+                          ), Spacer(),
+                          AnimatedThemeToggleButton(),
+                        ],
+                      ),
+                    ),
+                  ),
 
                 SizedBox(height: 10.h),
 
@@ -365,3 +416,73 @@ class LanguageToggle extends StatelessWidget {
     );
   }
 }
+
+class AnimatedThemeToggleButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, themeMode) {
+        final isDark = themeMode == ThemeMode.dark;
+
+        return GestureDetector(
+          onTap: () {
+            if (isDark) {
+              context.read<ThemeCubit>().setLightTheme();
+            } else {
+              context.read<ThemeCubit>().setDarkTheme();
+            }
+          },
+          child: Container(
+
+            height: 40,
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 400),
+              curve: Curves.easeInOut,
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: isDark ? Colors.black87 : Colors.orangeAccent,
+                borderRadius: BorderRadius.circular(50),
+                boxShadow: [
+                  BoxShadow(
+                    color: isDark ? Colors.black45 : Colors.orange.withOpacity(0.5),
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AnimatedSwitcher(
+                    duration: Duration(milliseconds: 300),
+                    transitionBuilder: (child, animation) => ScaleTransition(
+                      scale: animation,
+                      child: child,
+                    ),
+                    child: Icon(
+                      isDark ? Icons.dark_mode : Icons.light_mode,
+                      key: ValueKey<bool>(isDark),
+                      color: Colors.white,
+                      size: 15,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  AnimatedDefaultTextStyle(
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    duration: Duration(milliseconds: 300),
+                    child: Text(isDark ? "Dark" : "Light"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+

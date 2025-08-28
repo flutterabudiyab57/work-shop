@@ -44,49 +44,6 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  /*
-  Future<void> _logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
-
-    if (token == null) return;
-
-    try {
-      final dio = Dio();
-      final response = await dio.post(
-        'https://devworkshop.abudiyabksa.com/api/logout',
-        options: Options(
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Accept': 'application/json',
-          },
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        // مسح البيانات
-        await prefs.clear();
-
-        setState(() {
-          _username = 'زائر';
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('تم تسجيل الخروج بنجاح')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('فشل تسجيل الخروج')),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('حدث خطأ أثناء تسجيل الخروج')),
-      );
-    }
-  }
-
- */
   @override
   Widget build(BuildContext context) {
     final locale = AppLocalizations.of(context);
@@ -268,43 +225,42 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                     Spacer(),
                     Container(
-                      width: 48,
-                      height: 48,
+                      width: 50.w, // responsive width
+                      height: 50.h, // نخليها مربعة ومقاسة حسب الشاشة
                       decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border.all(
-                          width: 1,
+                          width: 1.w, // responsive border
                           color: Colors.black.withValues(alpha: 0.5),
                         ),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10.r), // responsive radius
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // الأيقونة أو  الفاضي للأيقونة
                           SizedBox(
-                            width: 18,
-                            height: 18,
+                            width: 18.w,
+                            height: 18.h,
                             child: Icon(
                               Icons.ios_share_outlined,
-                              size: 20.sp,
-                              color: Color(0xFF474747),
+                              size: 20.sp, // responsive icon size
+                              color: const Color(0xFF474747),
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 6.h), // responsive spacing
                           Text(
                             'مشاركة',
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: Color(0xFFBA1B1B),
-                              fontSize: 10,
+                            style: TextStyle(
+                              color: const Color(0xFFBA1B1B),
+                              fontSize: 10.sp, // responsive font size
                               fontFamily: 'Graphik Arabic',
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
                       ),
-                    ),
+                    )
                   ],
                 ),
               ],
@@ -417,9 +373,9 @@ class _MainScreenState extends State<MainScreen> {
                         Center(
                           child: Image.asset(
                             'assets/images/main_pack.png',
-                            width: 350.w,
+                            width:double.infinity,
                             height: 140.h,
-                            fit: BoxFit.contain,
+                            fit: BoxFit.fill,
                           ),
                         ),
                         SizedBox(height: 15.h),
@@ -856,7 +812,8 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
     );
-  }///
+  }
+  ///
   ///
   ///
   ///

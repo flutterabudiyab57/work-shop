@@ -9,6 +9,7 @@ import '../cubit/login_cubit.dart';
 import '../cubit/register_cubit.dart';
 import '../cubit/register_state.dart';
 import '../model/register_request_model.dart';
+import '../widget/build_label.dart';
 import '../widget/support_bottom_sheet.dart';
 import 'login.dart';
 import 'otp.dart';
@@ -122,7 +123,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                             ),
                             SizedBox(height: 20.h),
 
-                            _buildLabel(isArabic ? 'الإسم' : 'Name'),
+                            build_label(text: isArabic ? 'الإسم' : 'Name'),
                             _buildTextField(
                               controller: _nameController,
                               hint: isArabic ? "XXXX XXXX" : "John Doe",
@@ -130,7 +131,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                             ),
                             SizedBox(height: 15.h),
 
-                            _buildLabel(isArabic ? 'رقم الهاتف' : 'Phone Number'),
+                            build_label(text: isArabic ? 'رقم الهاتف' : 'Phone Number'),
                             _buildTextField(
                               controller: _phoneController,
                               hint: isArabic ? "5XXXXXXX" : "5XXXXXXX",
@@ -140,7 +141,7 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
                             ),
                             SizedBox(height: 15.h),
 
-                            _buildLabel(isArabic ? 'كلمة المرور' : 'Password'),
+                            build_label(text: isArabic ? 'كلمة المرور' : 'Password'),
                             _buildTextField(
                               controller: _passwordController,
                               hint: "********",
@@ -315,20 +316,6 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
     );
   }
 
-  Widget _buildLabel(String text) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 6.h),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 13.sp,
-          fontFamily: 'Graphik Arabic',
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
 
   Widget _buildTextField({
     required TextEditingController controller,
@@ -362,3 +349,4 @@ class _AuthBottomSheetState extends State<AuthBottomSheet> {
     );
   }
 }
+

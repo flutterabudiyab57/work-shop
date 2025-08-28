@@ -126,7 +126,7 @@ class _ChangeTireState extends State<ChangeTire> {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is CarBrandLoaded) {
                     return SizedBox(
-                      height: 100,
+                      height: 110.h,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: state.brands.length,
@@ -143,7 +143,7 @@ class _ChangeTireState extends State<ChangeTire> {
                               context.read<CarModelCubit>().fetchCarModels(car.id);
                             },
                             child: Container(
-                              width: 70,
+                              width: 80.w, // عرض ريسبونسف
                               margin: const EdgeInsets.symmetric(horizontal: 8),
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
@@ -166,8 +166,8 @@ class _ChangeTireState extends State<ChangeTire> {
                                 children: [
                                   Image.network(
                                     car.image,
-                                    width: 40,
-                                    height: 40,
+                                    width: 40.w,
+                                    height: 40.h,
                                     fit: BoxFit.contain,
                                     errorBuilder: (context, error, stackTrace) =>
                                     const Icon(Icons.error, size: 24),
