@@ -18,6 +18,18 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget build(BuildContext context) {
 
     final locale = AppLocalizations.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final Color activeOrdersBackgroundColor = _showActiveOrders
+        ? const Color(0xFFBA1B1B)
+        : isDark
+        ? Colors.black
+        : Colors.white24;
+    final Color oldOrdersBackgroundColor = !_showActiveOrders
+        ? const Color(0xFFBA1B1B)
+        : isDark
+        ? Colors.black
+        : Colors.white24;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 130.h,
@@ -78,18 +90,30 @@ class _OrderScreenState extends State<OrderScreen> {
                     child: Container(
                       height: 50,
                       padding: const EdgeInsets.all(10),
-                      decoration: ShapeDecoration(
-                        color: _showActiveOrders ? const Color(0xFFBA1B1B) : const Color(0xFFE0E0E0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color:     Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white,
+                          width: 1,
                         ),
+                        color: activeOrdersBackgroundColor,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: Theme.of(context).brightness == Brightness.dark
+                            ? [
+
+
+                        ]
+                            : [],
                       ),
                       child: Center(
                         child: Text(
                           'الطلبات النشطة',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: _showActiveOrders ? Colors.white : Colors.black,
+                            color:  Theme.of(context).brightness == Brightness.light
+                                ? Colors.black
+                                : Colors.white,
                             fontSize: 18,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w600,
@@ -101,7 +125,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                 ),
 
-                SizedBox(width: 10), // Add some spacing between tabs
+                SizedBox(width: 35), // Add some spacing between tabs
 
                 // Old Orders Tab
                 Expanded(
@@ -114,18 +138,22 @@ class _OrderScreenState extends State<OrderScreen> {
                     child: Container(
                       height: 50,
                       padding: const EdgeInsets.all(10),
-                      decoration: ShapeDecoration(
-                        color: !_showActiveOrders ? const Color(0xFFBA1B1B) : const Color(0xFFE0E0E0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color:     Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white,
+                          width: 1,
                         ),
+                        color: oldOrdersBackgroundColor,
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Center(
                         child: Text(
                           'الطلبات القديمة',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: !_showActiveOrders ? Colors.white : Colors.black,
+                            color: Colors.white,
                             fontSize: 18,
                             fontFamily: 'Graphik Arabic',
                             fontWeight: FontWeight.w600,

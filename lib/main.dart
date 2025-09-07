@@ -43,16 +43,21 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => ServicesCubit(dio: Dio())..fetchServices()),
+        BlocProvider(create: (_) =>
+        ServicesCubit(dio: Dio())
+          ..fetchServices()),
         BlocProvider(
-          create: (_) => CarBrandCubit(
+          create: (_) =>
+          CarBrandCubit(
             dio: Dio(),
             productionApi: productionApi,
             brandApi: BrandApi,
-          )..fetchCarBrands(),
+          )
+            ..fetchCarBrands(),
         ),
         BlocProvider<CarModelCubit>(
-          create: (_) => CarModelCubit(dio: Dio(), productionApi: productionApi),
+          create: (_) =>
+              CarModelCubit(dio: Dio(), productionApi: productionApi),
         ),
         BlocProvider<AddCarCubit>(create: (_) => AddCarCubit()),
         BlocProvider<LoginCubit>(create: (_) => LoginCubit(dio: Dio())),
@@ -64,7 +69,9 @@ void main() async {
       ],
       child: MyApp(
         key: myAppKey,
-        initialScreen: initialToken != null ? const HomeScreen() : OnboardingScreen(),
+        initialScreen: initialToken != null
+            ? const HomeScreen()
+            : OnboardingScreen(),
       ),
     ),
   );
@@ -72,6 +79,7 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   final Widget initialScreen;
+
   const MyApp({Key? key, required this.initialScreen}) : super(key: key);
 
   @override

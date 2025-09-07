@@ -19,7 +19,7 @@ class ForgotPasswordSuccess extends LoginState {
   ForgotPasswordSuccess({required this.phone, required this.otp});
 }
 
-class ResetPasswordLoading extends LoginState {} // ✅ أضف هذه
+class ResetPasswordLoading extends LoginState {}
 class ResetPasswordSuccess extends LoginState {}
 class ResetPasswordFailure extends LoginState {
   final String message;

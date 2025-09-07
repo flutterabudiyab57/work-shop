@@ -168,7 +168,6 @@ class OnboardingContent extends StatelessWidget {
           ),
           SizedBox(height: 40),
 
-          // العنوان RichText
           RichText(
             textAlign: TextAlign.center,
             textDirection: TextDirection.rtl,
@@ -177,7 +176,9 @@ class OnboardingContent extends StatelessWidget {
                 TextSpan(
                   text: title,
                   style: TextStyle(
-                    color: Colors.black,
+                   color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors. white,
                     fontSize: 25,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w600,
@@ -196,13 +197,15 @@ class OnboardingContent extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Baseline(
-                      baseline: 25, // نفس حجم الـ fontSize عشان ينطبق
+                      baseline: 25,
                       baselineType: TextBaseline.alphabetic,
                       child: Text(
                         textDirection: TextDirection.rtl,
                         title2,
                         style: TextStyle(
-                          color: Colors.black,
+                          color: Theme.of(context).brightness == Brightness.light
+                              ? Colors.black
+                              : Colors. white,
                           fontSize: 25,
                           fontFamily: 'Graphik Arabic',
                           fontWeight: FontWeight.w600,
@@ -220,7 +223,9 @@ class OnboardingContent extends StatelessWidget {
             description,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.black.withValues(alpha: 0.70),
+              color: Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors. white,
               fontSize: 20,
               fontFamily: 'Graphik Arabic',
               fontWeight: FontWeight.w500,

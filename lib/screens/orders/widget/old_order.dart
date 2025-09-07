@@ -16,10 +16,12 @@ class OldOrder extends StatelessWidget {
       // Makes container responsive
       padding: EdgeInsets.all(12),
       // Add padding instead of hardcoded positions
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        shadows: [
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors. white
+            : Colors. black,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
           BoxShadow(
             color: Color(0x3F000000),
             blurRadius: 12,
@@ -28,6 +30,7 @@ class OldOrder extends StatelessWidget {
           ),
         ],
       ),
+
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -324,22 +327,23 @@ class OldOrder extends StatelessWidget {
           Center(
             child: Container(
               width: double.infinity,
-              // يجعل الحاوية متجاوبة
               constraints: BoxConstraints(maxWidth: 327.w),
-              // أقصى عرض
               height: 55.h,
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(width: 1.50, color: const Color(0xFFA3A3A3)),
-                  borderRadius: BorderRadius.circular(12),
+              decoration: BoxDecoration(
+                color:     Theme.of(context).brightness == Brightness.light
+                    ? Colors. white
+                    : Colors. black,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  width: 1.5,
+                  color:  Theme.of(context).brightness == Brightness.light
+                      ? Colors.black
+                      : Colors.white,
                 ),
               ),
               child: Center(
-                // أضفنا Center هنا لجعل المحتوى في المنتصف رأسيًا
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  // يجعل العناصر في المنتصف أفقيًا
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.asset(
@@ -353,7 +357,9 @@ class OldOrder extends StatelessWidget {
                       'إجمالي الفاتورة:',
                       textAlign: TextAlign.right,
                       style: TextStyle(
-                        color: Colors.black,
+                        color:  Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white,
                         fontSize: 18.sp,
                         fontFamily: 'Graphik Arabic',
                         fontWeight: FontWeight.w600,

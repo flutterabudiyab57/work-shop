@@ -28,7 +28,6 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
         _selectedImage = File(pickedFile.path);
       });
 
-      // نرجع الصورة للأب
       widget.onImageSelected(_selectedImage);
     }
 
@@ -92,9 +91,11 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(14.w),
+            margin: EdgeInsets.all(15.w),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color:Theme.of(context).brightness == Brightness.light
+                  ? Colors.white
+                  : Colors.black,
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: color, size: 30.w),
@@ -103,6 +104,9 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
           Text(
             label,
             style: TextStyle(
+              color:Theme.of(context).brightness == Brightness.light
+                  ? Colors.black
+                  : Colors.white,
               fontSize: 13.sp,
               fontFamily: 'Graphik Arabic',
               fontWeight: FontWeight.w500,
@@ -121,7 +125,9 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
       decoration: ShapeDecoration(
-        color: const Color(0xFFEAEAEA),
+        color:    Theme.of(context).brightness == Brightness.light
+            ?const Color(0xFFEAEAEA)
+            : Colors. black,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.r),
         ),
@@ -130,8 +136,8 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
         onTap: _pickImage,
         child: DottedBorder(
           color: Colors.grey,
-          strokeWidth: 1,
-          dashPattern: [6, 3],
+          strokeWidth: 3,
+          dashPattern: [16.h,8.w],
           borderType: BorderType.RRect,
           radius: Radius.circular(8.r),
           padding: EdgeInsets.symmetric(horizontal: 8.w),
@@ -140,10 +146,19 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
                 ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/icons/ep_upload.png',
-                  height: 50,
-                  width: 65,
+                Container(
+                  decoration: BoxDecoration(
+                    color:Theme.of(context).brightness == Brightness.light
+                        ? Colors.transparent
+                        : Colors.grey,
+
+                  ),
+                  child: Image.asset(
+                    'assets/icons/ep_upload.png',
+                    height: 46.32.h ,
+                    width:62.04.w,
+                    fit:BoxFit.fill ,
+                  ),
                 ),
                 SizedBox(height: 8.h),
                 Text(
@@ -152,7 +167,10 @@ class _UploadFormWidgetState extends State<UploadFormWidget> {
                       : 'You can upload car registration here',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.black.withOpacity(0.7),
+
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Colors.black.withOpacity(0.7)
+                        : Colors.white,
                     fontSize: 13.sp,
                     fontFamily: 'Graphik Arabic',
                     fontWeight: FontWeight.w500,

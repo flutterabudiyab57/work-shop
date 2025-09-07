@@ -17,7 +17,10 @@ class ActiveOrder extends StatelessWidget {
       padding: EdgeInsets.all(12),
       // Add padding instead of hardcoded positions
       decoration: ShapeDecoration(
-        color: Colors.white,
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors. white
+            : Colors. black,
+
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         shadows: [
           BoxShadow(
@@ -166,6 +169,12 @@ class ActiveOrder extends StatelessWidget {
                 width: 93.w ,
                 height: 85.h,
                 decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.transparent,
+                  width: 1,
+                  ),
                   color: Colors.black.withOpacity(0.06),
                   borderRadius: BorderRadius.circular(12),
                 ),
